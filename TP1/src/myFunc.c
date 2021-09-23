@@ -76,13 +76,16 @@ int calcMyFactorial(int number,int* result)//calculo un factorial del numero dad
 {
 	int factorial = 1;
 	int i;
-	for(i = number; i > 1; i--)
-	{
-		factorial = factorial * i;
+	int errorCode = -1;
+	if(number > 0){
+		for(i = number; i > 1; i--)
+		{
+			factorial = factorial * i;
+		}
+		*result = factorial;
+		errorCode = 0;
 	}
-	*result = factorial;
-
-	return 0;
+	return errorCode;
 }
 
 int getMyOperation(int* operation)
