@@ -46,6 +46,7 @@ int main(void)
 		do
 		{
 			showMyMenu();//Mostrar Mi menu
+			fflush(stdin);
 			switch(option)
 			{
 				case 0:
