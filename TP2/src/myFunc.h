@@ -12,17 +12,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-int isNum(char*);
-int myGets(char* , int);
+int myGets(char* , int); //recibe un string y le saca el \n del final
+int getMyInt(int* ); //recibe un string y si es entero lo convierte a entero, positivo o negativo dependiendo
+int getMyFloat(float* );//recibe un string si es float lo vonvierte a float, positivo o negativo dependiendo
 
+int isNum(char*); // checkea que un string sea entero
+int isFloat(char*); // checkea que un string sea float
+int isAlph(char*); //checkea que un string solo tenga letras
+int charAlpha(char);//checkea que un caracter sea una letra
 //FLOAT FUNCTIONS
-int getMyFloat(float* );
-int myFloatCalculator(float , float , char , float* );
 
 
 //INT FUNCTIONS
-int getMyInt(int* );
-int calcMyFactorial(int ,int* );
-int getMyOperation(int* );
+
 
 #endif /* MYFUNC_H_ */
