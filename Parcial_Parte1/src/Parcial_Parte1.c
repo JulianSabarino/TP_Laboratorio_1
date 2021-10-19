@@ -45,11 +45,22 @@ int main(void)
 
 	if(errorCode == 0)
 	{
+		addSaloon(saloonList, LISTLENGHT, "AlfaBe", "Yulians", "Micasa", "Shopping");
+		addSaloon(saloonList, LISTLENGHT, "BerFa", "Marinas", "Tucasa", "Shopping");
+		addSaloon(saloonList, LISTLENGHT, "CarTu", "Halfonzos", "Lacasa", "Local");
+
+		addArcade(arcadeList, LISTLENGHT, "Argentina", "Mono", 2, 50, "AlfaBe", "SnowBros", "SnowAr");
+		addArcade(arcadeList, LISTLENGHT, "Peru", "Estereo", 1, 100, "AlfaBe", "MarioBros", "MariPe");
+
+		myGames(2, "SnowBros");
+		myGames(2, "MarioBros");
+
 		do
 		{
 			printMenuSaloon(1);
 			printMenuArcade(4);
 			printMenuInfo(9, 1);
+
 
 			errorCode = getMyOption(&option);
 			if(errorCode == 0)
@@ -58,21 +69,41 @@ int main(void)
 				{
 					case 1:
 						errorCode = protectedAddSaloon(saloonList,LISTLENGHT); //funciona
+						if(errorCode==-1)
+						{
+							printf("No se pudo Agregar Salon");
+						}
 						break;
 					case 2:
 						errorCode = protectedDeleteSaloon(saloonList, LISTLENGHT, arcadeList, LISTLENGHT); //funciona
+						if(errorCode==-1)
+						{
+							printf("No se pudo Eliminar Salon");
+						}
 						break;
 					case 3:
 						errorCode = printSaloon(saloonList, LISTLENGHT, 4); //funciona
 						break;
 					case 4:
 						errorCode = protectedAddArcade(arcadeList, LISTLENGHT, saloonList, LISTLENGHT); //funciona
+						if(errorCode==-1)
+						{
+							printf("No se pudo Agregar Arcade");
+						}
 						break;
 					case 5:
 						errorCode = protectedModifyArcade(arcadeList, LISTLENGHT);//funciona
+						if(errorCode==-1)
+						{
+							printf("No se pudo Modificar Arcade");
+						}
 						break;
 					case 6:
 						errorCode = protectedDeleteArcade(arcadeList, LISTLENGHT); //funciona
+						if(errorCode==-1)
+						{
+							printf("No se pudo Eliminar Arcade");
+						}
 						break;
 					case 7:
 						errorCode = printArcade(arcadeList, LISTLENGHT);//funciona
@@ -89,36 +120,38 @@ int main(void)
 								listMediumSaloon(saloonList, LISTLENGHT, arcadeList, LISTLENGHT);
 								break;
 							case 2:
-								listMultiplayer(arcadeList, LISTLENGHT);
+								listMultiplayer(arcadeList, LISTLENGHT); //funciona
 								break;
 							case 3:
 								printSaloon(saloonList, LISTLENGHT, 4);
 								printf("Ingrese Id del Salon: ");
 								myGets(id, sizeof(id));
-								listSaloonInfo(saloonList, LISTLENGHT, arcadeList, LISTLENGHT, id);
+								listSaloonInfo(saloonList, LISTLENGHT, arcadeList, LISTLENGHT, id); //funciona
 								break;
 							case 4:
-								printArcade(arcadeList, LISTLENGHT);
-								printf("Ingrese Id del Arcade: ");
+								printSaloon(saloonList, LISTLENGHT, 4);
+								printf("Ingrese Id del Salon: ");
 								myGets(id, sizeof(id));
-								listArcadeInfo(saloonList, LISTLENGHT, arcadeList, LISTLENGHT, id);
+								listArcadeInfo(saloonList, LISTLENGHT, arcadeList, LISTLENGHT, id); //funciona
 								break;
 							case 5:
-								listBiggestSaloon(saloonList, LISTLENGHT, arcadeList, LISTLENGHT);
+								listBiggestSaloon(saloonList, LISTLENGHT, arcadeList, LISTLENGHT);//funciona
 								break;
 							case 6:
-								printSaloon(saloonList, LISTLENGHT, 4);
+								printSaloon(saloonList, LISTLENGHT, 4); //funciona
 								printf("Ingrese Id del Salon: ");
 								myGets(id, sizeof(id));
 								printf("Ingrese precio de las fichas: ");
 								getMyInt(&tokenPrice);
-								listSaloonIncome(saloonList, LISTLENGHT, arcadeList, LISTLENGHT, id, tokenPrice);
+								errorCode = listSaloonIncome(saloonList, LISTLENGHT, arcadeList, LISTLENGHT, id, tokenPrice);
+								printf("El ingreso maximo del salon seleccionado es: %d \n",errorCode);
 								break;
 							case 7:
-								myGames(1, NULL);
+								myGames(1, NULL); //no funciona
 								printf("Ingrese Juego a Filtrar: ");
 								myGets(gameName, sizeof(gameName));
-								listArcadeGames(arcadeList, LISTLENGHT, gameName);
+								errorCode = listArcadeGames(arcadeList, LISTLENGHT, gameName);
+								printf("El juego seleccionado aparece en %d Arcades\n",errorCode);
 								break;
 							default:
 								printf("opcion invalida");
@@ -137,6 +170,6 @@ int main(void)
 	{
 		printf("Hubo problemas al ejecutar el programa");
 	}
-	puts("TP 1"); /* prints TP 1 */
+	puts("Parcial 1"); /* prints TP 1 */
 	return EXIT_SUCCESS;
 }

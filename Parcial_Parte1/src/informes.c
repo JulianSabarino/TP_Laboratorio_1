@@ -33,7 +33,7 @@ int listMediumSaloon(Saloon* listS,int lenS,Arcade* listA,int lenA)
 				}
 				if(counter >= 4)
 				{
-					printf("%s %s %s %s %d\n",listS[i].id,listS[i].name,listS[i].direc,listS[i].type,counter);
+					printf("ID: %s Name: %s Direc: %s Tipo: %s C.Arcades: %d\n",listS[i].id,listS[i].name,listS[i].direc,listS[i].type,counter);
 					totalCounter++;
 				}
 			}
@@ -54,7 +54,7 @@ int listMultiplayer(Arcade* list, int len)
 		{
 			if(list[i].isEmpty == 0 && list[i].cantPlayers >=2)
 			{
-				printf("%s %d %s %s\n",list[i].id,list[i].cantPlayers,list[i].gameName,list[i].saloonId);
+				printf("ID: %s C.Players: %d G.Name: %s ID Salon: %s\n",list[i].id,list[i].cantPlayers,list[i].gameName,list[i].saloonId);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ int listSaloonInfo(Saloon* listS,int lenS,Arcade* listA,int lenA, char* id)
 					}
 				}
 			}
-			printf("%s %s %s %s %d\n",listS[i].id,listS[i].name,listS[i].direc,listS[i].type,counter);
+			printf("ID: %s Nombre: %s Direc: %s Typo: %s C.Arcades: %d\n",listS[i].id,listS[i].name,listS[i].direc,listS[i].type,counter);
 		}
 		errorCode = totalCounter;
 	}
@@ -103,14 +103,15 @@ int listArcadeInfo(Saloon* listS,int lenS,Arcade* listA,int lenA, char* id)
 		if(listS[i].isEmpty == 0)
 		{
 			counter = 0;
-			printf("%s %s %s %s\n",listS[i].id,listS[i].name,listS[i].direc,listS[i].type);
+			printf("ID: %s Name: %s Direc: %s Tipo: %s\n",listS[i].id,listS[i].name,listS[i].direc,listS[i].type);
+			printf("--------------------------------\n");
 			for(j=0;j<lenA;j++)
 			{
 				if(listA[j].isEmpty == 0)
 				{
 					if(stricmp(listS[i].id,listA[j].saloonId) == 0)
 					{
-						printf("%s %s %d %d %s %s\n", listA[j].id, listA[j].gameName, listA[j].cantPlayers, listA[j].maxToken, listA[j].nation, listA[j].soundType);
+						printf("ID: %s G.Name: %s C.Players: %d Fichas: %d Nac: %s S.Type: %s\n", listA[j].id, listA[j].gameName, listA[j].cantPlayers, listA[j].maxToken, listA[j].nation, listA[j].soundType);
 						counter++;
 					}
 				}
@@ -158,6 +159,7 @@ int listBiggestSaloon(Saloon* listS,int lenS,Arcade* listA,int lenA)
 
 		}
 		errorCode = maxID;
+		listSaloonInfo(listS, lenS, listA, lenA, listS[errorCode].id);
 	}
 	return errorCode;
 }
