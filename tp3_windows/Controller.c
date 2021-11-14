@@ -51,6 +51,7 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
 				break;
 			}
 		}
+		fclose(fp);
 	}
 	else
 	{
@@ -86,6 +87,7 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 				ll_add(pArrayListEmployee, employee);
 			}
 		}
+		fclose(fp);
 	}
 	else
 	{
