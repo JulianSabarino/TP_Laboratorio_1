@@ -191,9 +191,16 @@ void* ll_get(LinkedList* this, int index)
 int ll_set(LinkedList* this, int index,void* pElement)
 {
     int errorCode = -1;
+    Node* temp;
     if(this != NULL && (index < ll_len(this) && index >= 0))
     {
-    	errorCode = addNode(this, index, pElement);
+    	temp = getNode(this, index);
+    	if(temp != NULL)
+    	{
+    		temp->pElement = pElement;
+    		errorCode = 0;
+    	}
+    	//errorCode = addNode(this, index, pElement);
     }
 
     return errorCode;
@@ -342,9 +349,20 @@ int ll_indexOf(LinkedList* this, void* pElement)
  */
 int ll_isEmpty(LinkedList* this)
 {
-    int returnAux = -1;
+    int errorCode = -1;
+    if(this != NULL)
+    {
+    	if(ll_len(this)>0)
+    	{
+    		errorCode = 0;
+    	}
+    	else
+    	{
+    		errorCode = 1;
+    	}
+    }
 
-    return returnAux;
+    return errorCode;
 }
 
 /** \brief Inserta un nuevo elemento en la lista en la posicion indicada
@@ -358,9 +376,13 @@ int ll_isEmpty(LinkedList* this)
  */
 int ll_push(LinkedList* this, int index, void* pElement)
 {
-    int returnAux = -1;
+    int errorCode = -1;
+    if(this != NULL && (index <= ll_len(this) && index >= 0))
+    {
+    	errorCode = addNode(this, index, pElement);
+    }
 
-    return returnAux;
+    return errorCode;
 }
 
 
@@ -374,9 +396,12 @@ int ll_push(LinkedList* this, int index, void* pElement)
  */
 void* ll_pop(LinkedList* this,int index)
 {
-    void* returnAux = NULL;
+    void* errorCode = NULL;
 
-    return returnAux;
+	errorCode= ll_get(this,index);
+	ll_remove(this,index);
+
+	return errorCode;
 }
 
 
@@ -390,9 +415,22 @@ void* ll_pop(LinkedList* this,int index)
 */
 int ll_contains(LinkedList* this, void* pElement)
 {
-    int returnAux = -1;
+	int errorCode = -1;
 
-    return returnAux;
+	if(this != NULL)
+	{
+		errorCode = ll_indexOf(this, pElement);
+		if(errorCode >= 0)
+		{
+			errorCode = 1;
+		}
+		else
+		{
+			errorCode = 0;
+		}
+	}
+
+    return errorCode;
 }
 
 /** \brief  Determina si todos los elementos de la lista (this2)
@@ -406,9 +444,23 @@ int ll_contains(LinkedList* this, void* pElement)
 */
 int ll_containsAll(LinkedList* this,LinkedList* this2)
 {
-    int returnAux = -1;
+	int errorCode = -1;
+	void* pElement;
 
-    return returnAux;
+	if(this != NULL && this2 != NULL)
+	{
+		errorCode = 0;
+		for(int i = 0; i<ll_len(this2);i++)
+		{
+			pElement = ll_get(this2, i);
+			errorCode = ll_contains(this, pElement);
+			if(errorCode == 0)
+			{
+				break;
+			}
+		}
+	}
+	return errorCode;
 }
 
 /** \brief Crea y retorna una nueva lista con los elementos indicados
@@ -423,9 +475,24 @@ int ll_containsAll(LinkedList* this,LinkedList* this2)
 */
 LinkedList* ll_subList(LinkedList* this,int from,int to)
 {
-    LinkedList* cloneArray = NULL;
+	LinkedList* errorCode = NULL;
+	void* temp;
+	int size=ll_len(this);
 
-    return cloneArray;
+	if(this!= NULL && from >= 0 && to <= size && from <= to)
+	{
+		errorCode=ll_newLinkedList();
+	    for (int i=from; i<to; i++)
+	    {
+	    	temp=ll_get(this,i);
+	    	if(temp!=NULL)
+	    	{
+	    		ll_add(errorCode,temp);
+	    	}
+	    }
+	}
+
+	return errorCode;
 }
 
 
@@ -438,9 +505,9 @@ LinkedList* ll_subList(LinkedList* this,int from,int to)
 */
 LinkedList* ll_clone(LinkedList* this)
 {
-    LinkedList* cloneArray = NULL;
+    LinkedList* errorCode = ll_subList(this, 0, ll_len(this));
 
-    return cloneArray;
+    return errorCode;
 }
 
 
@@ -453,9 +520,55 @@ LinkedList* ll_clone(LinkedList* this)
  */
 int ll_sort(LinkedList* this, int (*pFunc)(void* ,void*), int order)
 {
-    int returnAux =-1;
+	int i;
+	int j;
+	int errorCode = -1;
+	int len = ll_len(this);
+	void* pElementA;
+	void* pElementB;
 
-    return returnAux;
+	if(this != NULL && len>0 && pFunc != NULL && (order == 0 || order == 1))
+	{
+		if(len>=2)
+		{
+			for(i=0;i<len-1;i++)
+			{
+				errorCode = 1;
+				for(j=(i+1);j<len;j++)
+				{
+					pElementA=ll_get(this,i);
+					pElementB=ll_get(this,j);
+					if(pElementA!= NULL && pElementB!= NULL)
+					{
+						if (order == 1)
+						{
+							if(pFunc(pElementA, pElementB)>0)
+							{
+								ll_set(this, i, pElementB);
+								ll_set(this, j, pElementA);
 
+								errorCode=0;
+							}
+						}
+						else
+						{
+							if(pFunc(pElementA, pElementB)<0)
+							{
+								ll_set(this, i, pElementB);
+								ll_set(this, j, pElementA);
+								errorCode=0;
+							}
+						}
+					}
+				}
+				if(errorCode != 0)
+				{
+					break;
+				}
+			}
+		}
+		errorCode = 0;
+	}
+	return errorCode;
 }
 
