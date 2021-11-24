@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "abm.h"
+#include "menu.h"
 
 #define LENGTH 1000
 
@@ -21,14 +22,18 @@ int main(void)
 	int option;
 	int errorCode;
 	initEmployees(list,LENGTH);
-	/*
-	errorCode = isAlph("EstoEsAlfa");
-	printf("%d\n",errorCode);
-	errorCode = isAlph("3st03sAlfaNum");
-	printf("%d\n",errorCode);
-	errorCode = charAlpha('A');
-	printf("%d\n",errorCode);
-	*/
+
+	addEmployee(list, LENGTH,"Julian","Sabarino",19500,0);
+	addEmployee(list, LENGTH,"Tobias","Fornaroli",24000,1);
+	addEmployee(list, LENGTH,"Juan","Cristal",35000,3);
+	addEmployee(list, LENGTH,"Tomas","Amitrano",16000,2);
+	addEmployee(list, LENGTH,"Mateo","Amitrano",5000,1);
+	addEmployee(list, LENGTH,"Roberto","Alfonso",18000,0);
+	addEmployee(list, LENGTH,"Aladin","Kaladin",25000,1);
+	addEmployee(list, LENGTH,"Ruberto","Elsapodetective",48000,2);
+	addEmployee(list, LENGTH,"Gasparin","Fantasma",12000,3);
+	addEmployee(list, LENGTH,"Benja","Monkee",40000,0);
+
 	do
 	{
 		showMyMenu();

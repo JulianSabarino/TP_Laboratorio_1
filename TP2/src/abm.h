@@ -22,17 +22,13 @@ struct Employee
 
 typedef struct Employee Employee;
 
-void showMyMenu();//Imprime el menu principal
-void showModify();//imprime el submenu para modificar y los empleados
-void showInfo();//imprime el submenu para hacer informes
-void showSort();//imprime el sub sub menu para el orden de los informes
+int printEmployee(Employee*, int, int); //imprime los datos de un empleado separados por un tab
+int printEmployees(Employee*, int);//imprime todos los empleados
 
-void printEmployee(Employee*, int, int); //imprime los datos de un empleado separados por un tab
-void printEmployees(Employee*, int);//imprime todos los empleados
+int initEmployees(Employee*, int);//inicializa el struct empleados con un 1 en is empty
 
-void initEmployees(Employee*, int);//inicializa el struct empleados con un 1 en is empty
-
-int addEmployee(Employee*, int, int, char* ,char* ,float ,int ); //funcion base de agregar empleados
+int setEmployee(Employee* list, int id, char* name,char* lastName,float salary,int sector, int postition);
+int addEmployee(Employee*, int, char* ,char* ,float ,int ); //funcion base de agregar empleados
 int protectedAdd(Employee*, int);//funcion donde yo pido y corroboro los datos para agregar empleados
 
 int modifyEmployee(Employee*,int,  int, int); //funcion base para modificar empleados

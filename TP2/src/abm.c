@@ -5,72 +5,75 @@
  *      Author: JS
  */
 #include "abm.h"
+#include "menu.h"
 
-void showMyMenu()
+int printEmployee(Employee* list,int len, int i)
 {
-	printf("1. ALTAS\n");
-	printf("2. MODIFICAR\n");
-	printf("3. BAJA\n");
-	printf("4. INFORMAR\n");
-	printf("\ta. Listado de los empleados ordenados alfabéticamente por Apellido y Sector.\n");
-	printf("\tb. Total y promedio de los salarios, y cuántos empleados superan el salario promedio.\n");
-	printf("5. Salir\n");
-}
-
-void showModify()
-{
-	printf("Elija lo que quiera modificar\n");
-	printf("\t1.Nombre\n");
-	printf("\t2.Apellido\n");
-	printf("\t3.Salario\n");
-	printf("\t4.Sector\n");
-}
-
-void showInfo()
-{
-	printf("Elija lo que quiera mostrar\n");
-	printf("\t1.Ordenados\n");
-	printf("\t2.Promedio de Salarios\n");
-}
-
-void showSort()
-{
-	printf("Elija como lo quiere ordenar\n");
-	printf("\t1.Ascendente\n");
-	printf("\t2.Descebdente\n");
-}
-
-void printEmployee(Employee* list,int len, int i)
-{
-	printf("%d\t\t%s\t\t%s\t\t%.2f\t\t%d\n",list[i].id,list[i].name,list[i].lastName,list[i].salary,list[i].sector);
-}
-
-void printEmployees(Employee* list,int len)
-{
-	//int j = findEmpty(list, len);
-	int i;
-	printf("ID\t\tNAME\t\tSURNAME\t\tSALARY\t\tSECTOR\n");
-	for(i = 0; i<len;i++)
+	int errorCode = -1;
+	if(i >=0 && i<len && list != NULL)
 	{
-		if(list[i].isEmpty == 0)
+		printf("%d %s %s %.2f %d\n",list[i].id,list[i].name,list[i].lastName,list[i].salary,list[i].sector);
+		errorCode = 0;
+	}
+	return errorCode;
+}
+
+int printEmployees(Employee* list,int len)
+{
+	int i;
+	int errorCode = -1;
+	if(len >=0 && list != NULL)
+	{
+		printf("ID\tNAME\tSURNAME\tSALARY\tSECTOR\n");
+		for(i = 0; i<len;i++)
 		{
-			printEmployee(list, len, i);
+			if(list[i].isEmpty == 0)
+			{
+				errorCode = printEmployee(list, len, i);
+				if(errorCode == -1)
+				{
+					break;
+				}
+			}
 		}
 	}
+	return errorCode;
 }
 
-void initEmployees(Employee* Employee, int size)
+int initEmployees(Employee* Employee, int size)
 {
 	int i;
-	for(i = 0;i < size;i++)
+	int errorCode = -1;
+	if(size >= 0 && list != NULL)
 	{
-		Employee[i].isEmpty = 1;
+		for(i = 0;i < size;i++)
+		{
+			Employee[i].isEmpty = 1;
+		}
+		errorCode = 0;
 	}
+	return errorCode;
 }
 
-
-int addEmployee(Employee* list, int len, int id, char* name,char* lastName,float salary,int sector)
+int setEmployee(Employee* list, int id, char* name,char* lastName,float salary,int sector, int postition)
 {
+	int errorCode = -1;
+	if(postition >= 0 && list != NULL)
+	{
+		list[postition].id = id;
+		strncpy(list[postition].name,name,51);
+		strncpy(list[postition].lastName,lastName,51);
+		list[postition].salary = salary;
+		list[postition].sector = sector;
+		list[postition].isEmpty = 0;
+		errorCode = 0;
+	}
+	return errorCode;
+}
+
+int addEmployee(Employee* list, int len, char* name,char* lastName,float salary,int sector)
+{
+	static int currentID = 0;
 	int i;
 	int errorCode = -1;
 	if(list != NULL && len > 0)
@@ -78,13 +81,11 @@ int addEmployee(Employee* list, int len, int id, char* name,char* lastName,float
 		i = findEmpty(list,len);
 		if(i >= 0)
 		{
-			list[i].id = id;
-			strncpy(list[i].name,name,51);
-			strncpy(list[i].lastName,lastName,51);
-			list[i].salary = salary;
-			list[i].sector = sector;
-			list[i].isEmpty = 0;
-			errorCode = i;
+			errorCode = setEmployee(list, currentID, name, lastName, salary, sector, currentID);
+			if(errorCode == 0)
+			{
+				currentID++;
+			}
 		}
 	}
 
@@ -93,33 +94,32 @@ int addEmployee(Employee* list, int len, int id, char* name,char* lastName,float
 
 int protectedAdd(Employee* list,int len)
 {
-	int errorCode = 0;
-	int id;
+	int errorCode = -1;
 	char name[51];
 	char lastName[51];
 	float salary;
 	int sector;
-
-	printf("Ingrese el ID del trabajador: ");
-	errorCode = errorCode + getMyInt(&id);
-
-	printf("Ingrese el NOMBRE del trabajador: ");
-	errorCode = errorCode + myGets(name, 51);
-
-	printf("Ingrese el APELLIDO del trabajador: ");
-	errorCode = errorCode + myGets(lastName, 51);
-
-	printf("Ingrese el SALARIO del trabajador: ");
-	errorCode = errorCode + getMyFloat(&salary);
-
-	printf("Ingrese el SECTOR del trabajador: ");
-	errorCode = errorCode + getMyInt(&sector);
-
-	if(errorCode == 0 && (id>0 && salary>0 && sector>=0 && isAlph(name)==0 && isAlph(lastName)==0))
+	if(list!=NULL && len >=0)
 	{
-		errorCode = addEmployee(list,len,id,name,lastName,salary,sector);
-	}
+		errorCode = 0;
 
+		printf("Ingrese el NOMBRE del trabajador: ");
+		errorCode = errorCode + myGets(name, 51);
+
+		printf("Ingrese el APELLIDO del trabajador: ");
+		errorCode = errorCode + myGets(lastName, 51);
+
+		printf("Ingrese el SALARIO del trabajador: ");
+		errorCode = errorCode + getMyFloat(&salary);
+
+		printf("Ingrese el SECTOR del trabajador(numerico): ");
+		errorCode = errorCode + getMyInt(&sector);
+
+		if(errorCode == 0 && (salary>0 && sector>=0 && isAlph(name)==0 && isAlph(lastName)==0))
+		{
+			errorCode = addEmployee(list,len,name,lastName,salary,sector);
+		}
+	}
 	return errorCode;
 }
 
@@ -174,36 +174,37 @@ int modifyEmployee(Employee* list,int len, int i, int option)
 
 int protectedModify(Employee* list,int len)
 {
-	int errorCode = 0;
+	int errorCode = -1;
 	int id;
 	int position;
 	int option;
-
-	printEmployees(list, len);
-	printf("Elija el el usuario por ID: ");
-	errorCode = getMyInt(&id);
-	if(errorCode == 0)
+	if(list != NULL && len >= 0)
 	{
-		position = findEmployeeById(list, len, id);
-		if(position != -1)
+		printEmployees(list, len);
+		printf("Elija el el usuario por ID: ");
+		errorCode = getMyInt(&id);
+		if(errorCode == 0)
 		{
-			showModify();
-			getMyInt(&option);
-			if(option>0 && option<5)
+			position = findEmployeeById(list, len, id);
+			if(position != -1)
 			{
-				errorCode = modifyEmployee(list,len, position, option);
+				showModify();
+				getMyInt(&option);
+				if(option>0 && option<5)
+				{
+					errorCode = modifyEmployee(list,len, position, option);
+				}
+				else
+				{
+					printf("Opcion invalida \n");
+				}
 			}
 			else
 			{
-				printf("Opcion invalida \n");
+				printf("ID invalido\n");
 			}
 		}
-		else
-		{
-			printf("ID invalido\n");
-		}
 	}
-
 	return errorCode;
 }
 
@@ -220,24 +221,26 @@ int removeEmployee(Employee* list, int len, int i)
 
 int protectedDelete(Employee* list, int len)
 {
-	int errorCode;
+	int errorCode = -1;
 	int id;
 	int position;
-
-	printEmployees(list, len);
-	printf("Elija el el usuario por ID: ");
-	errorCode = getMyInt(&id);
-	if(errorCode == 0)
+	if(len >= 0 && list != NULL)
 	{
-		position = findEmployeeById(list, len, id);
-		if(position != -1)
+		printEmployees(list, len);
+		printf("Elija el el usuario por ID: ");
+		errorCode = getMyInt(&id);
+		if(errorCode == 0)
 		{
-			errorCode = removeEmployee(list, len, position);
-		}
-		else
-		{
-			printf("ID invalido\n");
-			errorCode = -1;
+			position = findEmployeeById(list, len, id);
+			if(position != -1)
+			{
+				errorCode = removeEmployee(list, len, position);
+			}
+			else
+			{
+				printf("ID invalido\n");
+				errorCode = -1;
+			}
 		}
 	}
 	return errorCode;
@@ -273,111 +276,67 @@ int swapEmployee(Employee* list,int len, int A, int B)
 	return errorCode;
 }
 
-int sortAscending(Employee* list, int len)
-{
-	int i;
-	int j;
-	int errorCode = -1;
-	if(list != NULL && len>0)
-	{
-		errorCode = 0;
-		for(i=0;i<len-1;i++)
-		{
-			//impArray(array,len);
-			if(list[i].isEmpty == 0)
-			{
-				for(j=(i+1);j<len;j++)
-				{
-					if(list[j].isEmpty == 0)
-					{
-						if(list[i].sector>list[j].sector)
-						{
-							errorCode = swapEmployee(list,len, i, j);
-						}
-						else
-						{
-							if(list[i].sector==list[j].sector)
-							{
-								if(stricmp(list[i].lastName,list[j].lastName)>0)
-								{
-									errorCode = swapEmployee(list,len, i, j);
-								}
-							}
-						}
-					}
-					if(errorCode != 0)
-					{
-						break;
-					}
-				}
-			}
-		}
-	}
-	return errorCode;
-}
-
-int sortDescending(Employee* list, int len)
-{
-	int i;
-	int j;
-	int errorCode = -1;
-	if(list != NULL && len>0)
-	{
-		errorCode = 0;
-		for(i=0;i<len-1;i++)
-		{
-			//impArray(array,len);
-			if(list[i].isEmpty == 0)
-			{
-				for(j=(i+1);j<len;j++)
-				{
-					if(list[j].isEmpty == 0)
-					{
-						if(list[i].sector<list[j].sector)
-						{
-							errorCode = swapEmployee(list,len, i, j);
-						}
-						else
-						{
-							if(list[i].sector==list[j].sector)
-							{
-								if(stricmp(list[i].lastName,list[j].lastName)<0)
-								{
-									errorCode = swapEmployee(list,len, i, j);
-								}
-							}
-						}
-					}
-					if(errorCode != 0)
-					{
-						break;
-					}
-				}
-			}
-		}
-	}
-	return errorCode;
-}
 
 int sortEmployees(Employee* list, int len, int order)
 {
+	int i;
+	int j;
 	int errorCode = -1;
-	if(list != NULL && len>0)
+	if(list != NULL && len>0 && (order == 0 || order == 1))
 	{
-		switch(order)
+		errorCode = 0;
+		for(i=0;i<len-1;i++)
 		{
-			case 1:
-				errorCode = sortAscending(list, len);
-				break;
-			case 2:
-				errorCode = sortDescending(list, len);
-				break;
-			default:
-				printf("Opcion invalida");
+			//impArray(array,len);
+			if(list[i].isEmpty == 0)
+			{
+				for(j=(i+1);j<len;j++)
+				{
+					if(list[j].isEmpty == 0)
+					{
+						if(order == 0)
+						{
+							if(list[i].sector>list[j].sector)
+							{
+								errorCode = swapEmployee(list,len, i, j);
+							}
+							else
+							{
+								if(list[i].sector==list[j].sector)
+								{
+									if(stricmp(list[i].lastName,list[j].lastName)>0)
+									{
+										errorCode = swapEmployee(list,len, i, j);
+									}
+								}
+							}
+						}
+						else
+						{
+							if(list[i].sector<list[j].sector)
+							{
+								errorCode = swapEmployee(list,len, i, j);
+							}
+							else
+							{
+								if(list[i].sector==list[j].sector)
+								{
+									if(stricmp(list[i].lastName,list[j].lastName)<0)
+									{
+										errorCode = swapEmployee(list,len, i, j);
+									}
+								}
+							}
+						}
+					}
+					if(errorCode != 0)
+					{
+						break;
+					}
+				}
+			}
 		}
 	}
-	printEmployees(list, len);
-
 	return errorCode;
 }
 
@@ -439,6 +398,10 @@ int protectedInfo(Employee* list, int len)
 					if(errorCode == 0)
 					{
 						errorCode = sortEmployees(list, len, option);
+						if(errorCode == 0)
+						{
+							printEmployees(list, len);
+						}
 					}
 					break;
 				case 2:

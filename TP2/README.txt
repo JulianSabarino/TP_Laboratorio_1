@@ -1,1 +1,0 @@
-Las intenciones en un futuro sera crear macros de Try Catch errors en C y agregar un erros.h y menus.h para facilitar el cambiar cosas
