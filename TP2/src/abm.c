@@ -44,7 +44,7 @@ int initEmployees(Employee* Employee, int size)
 {
 	int i;
 	int errorCode = -1;
-	if(size >= 0 && list != NULL)
+	if(size >= 0 && Employee != NULL)
 	{
 		for(i = 0;i < size;i++)
 		{
