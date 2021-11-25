@@ -23,6 +23,7 @@ int main(void)
 	int errorCode;
 	initEmployees(list,LENGTH);
 
+
 	addEmployee(list, LENGTH,"Julian","Sabarino",19500,0);
 	addEmployee(list, LENGTH,"Tobias","Fornaroli",24000,1);
 	addEmployee(list, LENGTH,"Juan","Cristal",35000,3);
@@ -34,48 +35,66 @@ int main(void)
 	addEmployee(list, LENGTH,"Gasparin","Fantasma",12000,3);
 	addEmployee(list, LENGTH,"Benja","Monkee",40000,0);
 
+	int firstTime = 1;
+
 	do
 	{
-		showMyMenu();
-		errorCode = getMyInt(&option);//Toma un valor entero, si el valor no es valido (por ejemplo un float o un string) cierra el programa
-		if(errorCode == 0)
+		if(firstTime == 0)
 		{
-			switch(option)
+			showMyMenu();
+			errorCode = getMyInt(&option);//Toma un valor entero, si el valor no es valido (por ejemplo un float o un string) cierra el programa
+			if(errorCode == 0)
 			{
-				case 1:
-					errorCode = protectedAdd(list,LENGTH);
-					if(errorCode < 0)
-					{
-						printf("Fallo al Agregar\n");
-					}
-					break;
-				case 2:
-					errorCode = protectedModify(list,LENGTH);
-					if(errorCode == -1)
-					{
-						printf("Fallo al Modificar\n");
-					}
-					break;
-				case 3:
-					errorCode = protectedDelete(list,LENGTH);
-					if(errorCode == -1)
-					{
-						printf("Fallo al Eliminar\n");
-					}
-					break;
-				case 4:
-					errorCode = protectedInfo(list, LENGTH);
-					if(errorCode == -1)
-					{
-						printf("Fallo al Mostrar\n");
-					}
-					break;
+				switch(option)
+				{
+					case 1:
+						errorCode = protectedAdd(list,LENGTH);
+						if(errorCode < 0)
+						{
+							printf("Fallo al Agregar\n");
+						}
+						break;
+					case 2:
+						errorCode = protectedModify(list,LENGTH);
+						if(errorCode == -1)
+						{
+							printf("Fallo al Modificar\n");
+						}
+						break;
+					case 3:
+						errorCode = protectedDelete(list,LENGTH);
+						if(errorCode == -1)
+						{
+							printf("Fallo al Eliminar\n");
+						}
+						break;
+					case 4:
+						errorCode = protectedInfo(list, LENGTH);
+						if(errorCode == -1)
+						{
+							printf("Fallo al Mostrar\n");
+						}
+						break;
+				}
+			}
+			else
+			{
+				printf("Hubo problemas al ejecutar el programa");
+				break;
 			}
 		}
 		else
 		{
-			printf("Hubo problemas al ejecutar el programa");
-			break;
+			printf("Ingrese Primer Usuario\n");
+			errorCode = protectedAdd(list,LENGTH);
+			if(errorCode < 0)
+			{
+				printf("Fallo al Agregar\n");
+			}
+			else
+			{
+				firstTime = 0;
+			}
 		}
 
 	}while(option != 5);

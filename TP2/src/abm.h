@@ -50,4 +50,6 @@ int protectedInfo(Employee*, int); //funcion base donde voy a pedir el tipo de i
 int findEmployeeById(Employee*, int,int); //busca un empleado por id y devuelve la posicion o -1 si no existe
 int findEmpty(Employee*, int); //busca el vacio mas proximo en orden y devuelve la posicion o -1 si no hay vacio
 
+int getPromSalary(Employee* list,int len, float* prom);
+
 #endif /* ABM_H_ */
