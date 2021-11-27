@@ -36,36 +36,6 @@ int main()
 
 
     LinkedList* listaEmpleados = ll_newLinkedList();
-    //LinkedList* listaOrdenada;
-
-    //currentID = controller_loadFromText("data.csv" , listaEmpleados);
-    //currentID = controller_loadFromBinary("prueba.bin", listaEmpleados);
-    //controller_ListEmployee(listaEmpleados);
-    //printf("\n %d \n",currentID);
-
-    //controller_sortEmployee(listaEmpleados);
-    //ll_sort(listaEmpleados, compare_employee,1);
-    //controller_ListEmployee(listaEmpleados);
-    //controller_saveAsText("prueba.txt" , listaEmpleados);
-    //controller_saveAsBinary("prueba.bin" , listaEmpleados);
-    //errorCode =
-/*    if(errorCode!= -1)
-    {
-    	currentID = errorCode;
-    }
-*/
-  //  printf("\n %d \n", currentID);
-/*
-    controller_addEmployee(listaEmpleados, currentID);
-    controller_ListEmployee(listaEmpleados);
-
-    controller_editEmployee(listaEmpleados);
-    controller_ListEmployee(listaEmpleados);
-
-    controller_removeEmployee(listaEmpleados);
-    controller_ListEmployee(listaEmpleados);
-*/
-
    do{
 	   showMenu();
 	   getMyOption(&option);
@@ -131,30 +101,7 @@ int main()
         	   controller_ListEmployee(listaEmpleados);
         	   break;
            case 7:
-        	   //printf("Se va a mostrar por orden alfabetico(no afecta la lista original). \n");
         	   controller_sortEmployee(listaEmpleados);
-        	   /*listaOrdenada = ll_clone(listaEmpleados);
-        	   if(listaOrdenada !=NULL)
-        	   {
-        		  errorCode = controller_sortEmployee(listaOrdenada);
-        		  if(errorCode == 1)
-        		  {
-        			  controller_ListEmployee(listaOrdenada);
-        		  }
-        		  else
-        		  {
-        			  ERROR(3)
-        		  }
-        	   }
-        	   else
-        	   {
-        		  ERROR(3);
-         		  errorCode = controller_sortEmployee(listaEmpleados);
-         		  if(errorCode == 1)
-         		  {
-         			  controller_ListEmployee(listaEmpleados);
-         		  }
-        	   }*/
         	   break;
            case 8:
        		   printf("Ingrese URL a guardar en modo texto(tiene que aclarar la extencion): ");

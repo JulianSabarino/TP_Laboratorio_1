@@ -10,24 +10,23 @@
  * \return int
  *
  */
-int parser_EmployeeFromText(FILE* fp , LinkedList* pArrayListEmployee)
+int parser_EmployeeFromText(FILE* pFile , LinkedList* pArrayListEmployee)
 {
 	int errorCode = 0;
-	char buffer[128];
+//	char buffer[128];
 	int id;
 	char nombre[128];
 	int horas;
 	int sueldo;
+
 	int read;
 
 	Employee *employee;
 
-	fgets(buffer, sizeof(buffer),fp);
-	//printf("%s",buffer);
-	while(!feof(fp))
+	if(pFile != NULL && pArrayListEmployee != NULL)
 	{
-		employee= employee_new();
-		read = fscanf(fp,"%d,%[^,],%d,%d\n",&id,nombre,&horas,&sueldo);
+		employee = employee_new();
+		read = fscanf(pFile,"%d,%[^,],%d,%d\n",&id,nombre,&horas,&sueldo);
 		if(read == 4 && employee != NULL)
 		{
 			errorCode = errorCode + employee_setId(employee, id);
@@ -36,18 +35,19 @@ int parser_EmployeeFromText(FILE* fp , LinkedList* pArrayListEmployee)
 			errorCode = errorCode + employee_setSueldo(employee, sueldo);
 			if(errorCode >= 0)
 			{
-				ll_add(pArrayListEmployee, employee);
-				errorCode=id;
+				errorCode = ll_add(pArrayListEmployee, employee);
+				if(errorCode == 0)
+				{
+					errorCode = id;
+				}
 			}
 		}
-		else
-		{
-			errorCode=-1;
-			break;
-		}
 	}
-	fclose(fp);
-    return errorCode;
+	else
+	{
+		errorCode = -1;
+	}
+	return errorCode;
 }
 
 /** \brief Parsea los datos los datos de los empleados desde el archivo data.csv (modo binario).
@@ -57,22 +57,26 @@ int parser_EmployeeFromText(FILE* fp , LinkedList* pArrayListEmployee)
  * \return int
  *
  */
-int parser_EmployeeFromBinary(FILE* fp , LinkedList* pArrayListEmployee)
+int parser_EmployeeFromBinary(FILE* pFile , LinkedList* pArrayListEmployee)
 {
-	int errorCode = 0;
+	int errorCode = -1;
 	int id;
+
 	Employee *employee;
 
-	while(!feof(fp))
+	if(pFile != NULL && pArrayListEmployee != NULL)
 	{
 		employee = employee_new();
-		fread(employee, sizeof(Employee),1,fp);
+		fread(employee, sizeof(Employee),1,pFile);
 		errorCode=employee_getId(employee, &id);
 		if(id > 0)
 		{
-			ll_add(pArrayListEmployee, employee);
+			errorCode = ll_add(pArrayListEmployee, employee);
+			if(errorCode == 0)
+			{
+				errorCode = id;
+			}
 		}
 	}
-	fclose(fp);
-    return errorCode;
+	return errorCode;
 }

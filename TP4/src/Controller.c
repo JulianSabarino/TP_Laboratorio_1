@@ -5,7 +5,6 @@
 #include "Controller.h"
 #include "myFunc.h"
 #include "parser.h"
-#include "menus.h"
 /** \brief Carga los datos de los empleados desde el archivo data.csv (modo texto).
  *
  * \param path char*
@@ -15,16 +14,23 @@
  */
 int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
 {
-	int errorCode = 0;
+	int errorCode = -1;
+	char buffer[128];
 
 	FILE *fp = fopen(path,"r");
-	if(fp != NULL)
+	if(fp != NULL && pArrayListEmployee != NULL)
 	{
-		errorCode = parser_EmployeeFromText(fp , pArrayListEmployee);
-	}
-	else
-	{
-		errorCode = -1;
+		fgets(buffer, sizeof(buffer),fp);
+		printf("%s",buffer);
+		while(!feof(fp))
+		{
+			errorCode = parser_EmployeeFromText(fp, pArrayListEmployee);
+			if(errorCode == -1)
+			{
+				break;
+			}
+		}
+		fclose(fp);
 	}
 
     return errorCode;
@@ -39,16 +45,21 @@ int controller_loadFromText(char* path , LinkedList* pArrayListEmployee)
  */
 int controller_loadFromBinary(char* path , LinkedList* pArrayListEmployee)
 {
-	int errorCode = 0;
+	int errorCode = -1;
 
 	FILE *fp = fopen(path,"rb");
-	if(fp != NULL)
+	if(fp != NULL && pArrayListEmployee != NULL)
 	{
-		parser_EmployeeFromBinary(fp ,pArrayListEmployee);
-	}
-	else
-	{
-		errorCode = -1;
+		while(!feof(fp))
+		{
+			errorCode = parser_EmployeeFromBinary(fp, pArrayListEmployee);
+			if(errorCode == -1)
+			{
+				break;
+			}
+		}
+		employee_getId(ll_get(pArrayListEmployee, ll_len(pArrayListEmployee)-1), &errorCode);
+		fclose(fp);
 	}
 
     return errorCode;
@@ -70,31 +81,29 @@ int controller_addEmployee(LinkedList* pArrayListEmployee, int currentID)
 	int sueldo;
 	int id = currentID + 1;
 	Employee* employee = employee_new();
-
-	errorCode = get_employee_data(nombre, &horasT, &sueldo);
-
-	if(errorCode == 0 && employee != NULL)
+	//printf("employee data: %d %d %s %d %d\n",errorCode,id,nombre, horasT, sueldo);
+	if(employee != NULL && pArrayListEmployee != NULL)
 	{
-		errorCode = errorCode + employee_setId(employee,id);
-		errorCode = errorCode + employee_setNombre(employee, nombre);
-		errorCode = errorCode + employee_setHorasTrabajadas(employee, horasT);
-		errorCode = errorCode + employee_setSueldo(employee, sueldo);
+		errorCode = get_employee_data(nombre, &horasT, &sueldo);
 		if(errorCode == 0)
 		{
-			errorCode = ll_add(pArrayListEmployee, employee);
+			errorCode = errorCode + employee_setId(employee,id);
+			errorCode = errorCode + employee_setNombre(employee, nombre);
+			errorCode = errorCode + employee_setHorasTrabajadas(employee, horasT);
+			errorCode = errorCode + employee_setSueldo(employee, sueldo);
 			if(errorCode == 0)
 			{
-				errorCode = id;
+				errorCode = ll_add(pArrayListEmployee, employee);
+				if(errorCode == 0)
+				{
+					errorCode = id;
+				}
+			}
+			else
+			{
+				errorCode = -1;
 			}
 		}
-		else
-		{
-			errorCode = -1;
-		}
-	}
-	else
-	{
-		errorCode = -1;
 	}
 
     return errorCode;
@@ -109,28 +118,31 @@ int controller_addEmployee(LinkedList* pArrayListEmployee, int currentID)
  */
 int controller_editEmployee(LinkedList* pArrayListEmployee)
 {
-	int errorCode;
+	int errorCode = -1;
 	int idToSearch;
 	int index;
 	Employee* pElement;
-	controller_ListEmployee(pArrayListEmployee);
-	printf("Ingrese ID a modificar:");
-	errorCode = getMyInt(&idToSearch);
-	if(errorCode == 0)
+	if(pArrayListEmployee != NULL)
 	{
-		pElement = searchById(pArrayListEmployee, idToSearch, &index);
+		controller_ListEmployee(pArrayListEmployee);
+		printf("Ingrese ID a modificar:");
+		errorCode = getMyInt(&idToSearch);
+		if(errorCode == 0)
+		{
+			pElement = searchById(pArrayListEmployee, idToSearch, &index);
 
-		if(pElement != NULL)
-		{
-			errorCode = modify_all(pElement);
-			if(errorCode == 0)
+			if(pElement != NULL)
 			{
-				errorCode = ll_set(pArrayListEmployee, errorCode, pElement);
+				errorCode = modify_all(pElement);
+				if(errorCode == 0)
+				{
+					errorCode = ll_set(pArrayListEmployee, errorCode, pElement);
+				}
 			}
-		}
-		else
-		{
-			errorCode = -1;
+			else
+			{
+				errorCode = -1;
+			}
 		}
 	}
 
@@ -146,27 +158,30 @@ int controller_editEmployee(LinkedList* pArrayListEmployee)
  */
 int controller_removeEmployee(LinkedList* pArrayListEmployee)
 {
-	int errorCode;
+	int errorCode = -1;
 	int idToSearch;
 	int index;
 	Employee* pElement;
-	printf("Ingrese ID a Eliminar:");
-	errorCode = getMyInt(&idToSearch);
-	if(errorCode == 0)
+	if(pArrayListEmployee != NULL)
 	{
-		pElement = searchById(pArrayListEmployee, idToSearch, &index);
+		printf("Ingrese ID a Eliminar:");
+		errorCode = getMyInt(&idToSearch);
+		if(errorCode == 0)
+		{
+			pElement = searchById(pArrayListEmployee, idToSearch, &index);
 
-		if(pElement != NULL)
-		{
-			errorCode = ll_remove(pArrayListEmployee,index);
-			if(errorCode == 0)
+			if(pElement != NULL)
 			{
-				free(pElement);
+				errorCode = ll_remove(pArrayListEmployee,index);
+				if(errorCode == 0)
+				{
+					free(pElement);
+				}
 			}
-		}
-		else
-		{
-			errorCode = -1;
+			else
+			{
+				errorCode = -1;
+			}
 		}
 	}
 
@@ -183,28 +198,26 @@ int controller_removeEmployee(LinkedList* pArrayListEmployee)
 int controller_ListEmployee(LinkedList* ListEmployee)
 {
 	int errorCode = -1;
-	Node* tempList = ListEmployee->pFirstNode;
-
+	Employee * employee;
 	int id;
 	char nombre[128];
 	int hora;
 	int sueldo;
 
-
-	printf("ID | NOMBRE | HORAS | SUELDO \n");
-	while(tempList!=NULL)
+	if(ListEmployee != NULL)
+	{
+		printf("ID | NOMBRE | HORAS | SUELDO \n");
+		for(int i = 0; i < ll_len(ListEmployee); i++)
 		{
-			employee_getId(tempList->pElement, &id);
-			employee_getNombre(tempList->pElement, nombre);
-			employee_getHorasTrabajadas(tempList->pElement, &hora);
-			employee_getSueldo(tempList->pElement, &sueldo);
+			employee = (Employee*)ll_get(ListEmployee, i);
+			employee_getId(employee, &id);
+			employee_getNombre(employee, nombre);
+			employee_getHorasTrabajadas(employee, &hora);
+			employee_getSueldo(employee, &sueldo);
 
 			printf("%d %s %d %d\n",id,nombre,hora,sueldo);
-
-			tempList = tempList->pNextNode;
 		}
-
-
+	}
     return errorCode;
 }
 
@@ -217,22 +230,8 @@ int controller_ListEmployee(LinkedList* ListEmployee)
  */
 int controller_sortEmployee(LinkedList* listaEmpleados)
 {
-	int errorCode = -1;
-	int option;
-	printf("Va a ordenar la lista, desea hacerlo de manera asendente o descendente?(1Asc/0Desc)");
-	getMyOption(&option);
-	if(option == 0)
-	{
-		errorCode = ll_sort(listaEmpleados, compare_employee,0);
-	}
-	else
-	{
-		if(option == 1)
-		{
-			errorCode = ll_sort(listaEmpleados, compare_employee,1);
-		}
-	}
-
+	int errorCode;
+	errorCode = ll_sort(listaEmpleados, compare_employee,1);
     return errorCode;
 }
 
@@ -246,7 +245,6 @@ int controller_sortEmployee(LinkedList* listaEmpleados)
 int controller_saveAsText(char* path , LinkedList* ListEmployee)
 {
 	FILE *fp = fopen(path,"w");
-	//Node* tempList = ListEmployee->pFirstNode;
 	Employee* employee;
 
 	int id;
@@ -256,7 +254,7 @@ int controller_saveAsText(char* path , LinkedList* ListEmployee)
 	int errorCode = 0;
 	int size = ListEmployee->size;
 
-	if(fp != NULL)
+	if(fp != NULL && ListEmployee != NULL)
 	{
 		fprintf(fp,"id,nombre,horasTrabajadas,sueldo\n");
 		for(int i = 0; i < size; i++)
@@ -281,7 +279,6 @@ int controller_saveAsText(char* path , LinkedList* ListEmployee)
 	{
 		errorCode = -1;
 	}
-
     return errorCode;
 }
 
@@ -295,13 +292,12 @@ int controller_saveAsText(char* path , LinkedList* ListEmployee)
 int controller_saveAsBinary(char* path , LinkedList* ListEmployee)
 {
 	FILE *fp = fopen(path,"wb");
-	//Node* tempList = ListEmployee->pFirstNode;
 	Employee* employee;
 
 	int errorCode = 0;
-	int size = ListEmployee->size;
+	int size = ll_len(ListEmployee);
 
-	if(fp != NULL)
+	if(fp != NULL && ListEmployee != NULL)
 	{
 		for(int i = 0; i < size; i++)
 		{
